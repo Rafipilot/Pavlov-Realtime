@@ -5,6 +5,7 @@ import keyboard
 import streamlit as st
 
 st.set_page_config(layout="centered")
+st.title("Realtime Pavlov App")
 
 if not st.session_state:
     st.session_state.agent = ao.Agent(Arch=Arch)
