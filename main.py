@@ -3,6 +3,7 @@ from Arch import Arch
 import time 
 import keyboard
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(layout="centered")
 st.title("Realtime Pavlov App")
@@ -11,6 +12,7 @@ if not st.session_state:
     st.session_state.agent = ao.Agent(Arch=Arch)
     st.session_state.Run = False
     st.session_state.trial_number = 0
+    st.session_state.results = []
 
 #TUNABLE PARAMETERS
 if st.slider("delay", max_value=10):
@@ -71,11 +73,28 @@ while st.session_state.Run == True:
         if response == [1]:
             responses +=1
 
-    
-    result.text(f"Trial number: ,{st.session_state.trial_number} ,Input: {input_to_agent}, Agent response:  {(responses/st.session_state.trials_at_time) *100} %   ")
+    trial_result = {"Trial number ": st.session_state.trial_number , "Input:": input_to_agent, "Agent response:":  (responses/st.session_state.trials_at_time) *100}
+    result.text(trial_result)
     st.session_state.trial_number +=1
+    st.session_state.results.append(trial_result)
+
+st.text(f"Results: {st.session_state.results}")
+results_df = pd.DataFrame(st.session_state.results)
+
+csv = results_df.to_csv(index=False)
+
+
+st.download_button(
+    label="Download Results as CSV",
+    data=csv,
+    file_name="pavlov_experiment_results.csv",
+    mime="text/csv"
+)
+
 
 ## TODO downloaad for results
+## Multiple agents
+## Intensity : B1 , b2 etc
 
 # Trial number Input Result Average(for multiple agents) 
 
