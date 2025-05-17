@@ -42,13 +42,25 @@ while st.session_state.Run == True:
         input_to_agent[0] = 1  # Food
 
     if keyboard.is_pressed("b"):
-        input_to_agent[1:4] = [1,1,1]
+
+        input_to_agent[1:4] = [1,0,0]
+        if keyboard.is_pressed("2"):
+            input_to_agent[1:4] = [1,1,0]
+        if keyboard.is_pressed("3"):
+            input_to_agent[1:4] = [1,1,1]
+
+
 
     if keyboard.is_pressed("t"):
         input_to_agent[4] = 1
 
     if keyboard.is_pressed("l"):
-        input_to_agent[5:8] = [1,1,1]
+        input_to_agent[5:8] = [1,0,0]
+        if keyboard.is_pressed("2"):
+            input_to_agent[5:8] = [1,1,0]
+        if keyboard.is_pressed("3"):
+            input_to_agent[5:8] = [1,1,1]
+
 
     if keyboard.is_pressed("c"):
         input_to_agent[8] = 1
