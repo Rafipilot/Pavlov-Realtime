@@ -104,9 +104,9 @@ while st.session_state.Run == True:
     st.session_state.trial_number +=1
     st.session_state.results.append(trial_result)
 
-st.text(f"Results: {st.session_state.results}")
-results_df = pd.DataFrame(st.session_state.results)
 
+results_df = pd.DataFrame(st.session_state.results)
+st.table(results_df)
 csv = results_df.to_csv(index=False)
 
 
