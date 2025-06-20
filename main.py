@@ -9,24 +9,24 @@ st.set_page_config(layout="centered")
 st.title("Realtime Pavlov App")
 
 if not st.session_state:
-    #st.session_state.agent = ao.Agent(Arch=Arch)
+    st.session_state.agent = ao.Agent(Arch=Arch)
+    st.session_state.agent._gen = False
     st.session_state.Run = False
     st.session_state.trial_number = 0
     st.session_state.results = []
-    st.session_state.inputOutputPairs = []
 
 #TUNABLE PARAMETERS
-st.session_state.delay = 1
-st.session_state.trials_at_time = 1
-st.session_state.num_agents = 1
+if st.slider("delay", max_value=10, min_value=1, value=1):
+    st.session_state.delay = 1
+if st.slider("trials", max_value=100, min_value=1, value=10):
+    st.session_state.trials_at_time = 10
 
-st.session_state.delay = st.slider("delay",min_value=1, max_value=10)
-st.session_state.trials_at_time = st.slider("trials", min_value=1, max_value=10)
-st.session_state.num_agents = st.slider("number of agents", max_value=10, min_value=1)
-
+#RANDOM PRETRAINING
+for i in range(4):
+    st.session_state.agent.reset_state(training=True)
+    st.session_state.agent.reset_state()
 
 if st.button("Start/ Stop"):
-
     if st.session_state.Run:
         st.session_state.Run = False
     else:
@@ -49,8 +49,6 @@ while st.session_state.Run == True:
             input_to_agent[1:4] = [1,1,0]
         if keyboard.is_pressed("3"):
             input_to_agent[1:4] = [1,1,1]
-
-
 
     if keyboard.is_pressed("t"):
         input_to_agent[4] = 1
@@ -81,32 +79,19 @@ while st.session_state.Run == True:
 
 
     for i in range(st.session_state.trials_at_time):
-        agent_responses = 0
-        for k in range(st.session_state.num_agents):
-            agent = ao.Agent(Arch, _steps = 10000)
-            #RANDOM PRETRAINING
-            for j in range(4):
-                agent.reset_state(training=True)
-            for j, InOut in enumerate(st.session_state.inputOutputPairs):
-                agent.next_state(InOut[0], InOut[1], INSTINCTS=True)
-                agent.reset_state()
-            response = agent.next_state(input_to_agent, INSTINCTS=True)
-  
-            if response == [1]:
-                responses +=1
+        response = st.session_state.agent.next_state(input_to_agent, INSTINCTS=True)
+        st.session_state.agent.reset_state()
+        if response == [1]:
+            responses +=1
 
-            agent = None 
-        
-
-    trial_result = {"Trial number ": st.session_state.trial_number , "Input:": input_to_agent, "Agent response:":  (responses/(st.session_state.trials_at_time*st.session_state.num_agents)) *100}
-    print("trials at time: ", st.session_state.trials_at_time, "Number of agents: ", st.session_state.num_agents, "Responses: ", responses)
+    trial_result = {"Trial number ": st.session_state.trial_number , "Input:": input_to_agent, "Agent response:":  (responses/st.session_state.trials_at_time) *100}
     result.text(trial_result)
     st.session_state.trial_number +=1
     st.session_state.results.append(trial_result)
 
-
+st.table(st.session_state.results)
 results_df = pd.DataFrame(st.session_state.results)
-st.table(results_df)
+
 csv = results_df.to_csv(index=False)
 
 
@@ -120,9 +105,6 @@ st.download_button(
 
 ## TODO downloaad for results
 ## Multiple agents
+## Intensity : B1 , b2 etc
 
 # Trial number Input Result Average(for multiple agents) 
-
-
-
-

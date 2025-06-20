@@ -85,20 +85,25 @@ def qa0_firing_rule(INPUT, Agent):
     if not hasattr(Agent, 'counter'):
         Agent.__setattr__("counter", 0)
 
-    if Agent.counter < (number_qa_neurons+1) and INPUT[0] == 1    and Agent.story[ Agent.state-1,  Agent.arch.Z__flat[0]] == 1: #If the agent ate food 
+    print("agent counter: ", Agent.counter)
+    print("last response: ", Agent.story[ Agent.state-1,  Agent.arch.Z__flat[0]])
+
+    if Agent.counter < (number_qa_neurons+1) and INPUT[0] == 1    and Agent.buffer[ -2,  Agent.arch.Z__flat[0]] == 1: #If the agent ate food 
+
         Agent.counter += 1
         group_response = np.zeros(number_qa_neurons)
         group_response[0 : Agent.counter] = 1
 
-    elif INPUT[0] == 0    and Agent.story[Agent.state-1,  Agent.arch.Z__flat[0]] == 1:   
+    elif INPUT[0] == 0    and Agent.buffer[ -2,  Agent.arch.Z__flat[0]] == 1:   
         if Agent.counter == 0:
             ## pain signal needed
             
-
+            print("applying pain signal")
             group_response = np.ones(number_qa_neurons)
             group_response[0 : Agent.counter] = 1
             Agent.counter = number_qa_neurons
         else:
+            print("reducing counter")
             # random_number = random.randint(0, 5)
             # if random_number == 3:
             if Agent.counter >= 1:
