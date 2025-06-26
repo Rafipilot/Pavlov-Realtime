@@ -75,7 +75,7 @@ def qa0_firing_rule(INPUT, Agent):
     group_response[0 : Agent.counter] = 1
     print("Agent counter is: ", Agent.counter)
     print("input is: ", INPUT[0])
-    print("Agent story is: ", Agent.story[Agent.state-1, Agent.arch.Z__flat[0]])
+    print("Agent prev state output: ", Agent.story[Agent.state-1, Agent.arch.Z__flat[0]])
 
     if Agent.counter < (number_qa_neurons+1) and INPUT[0] == 1    and Agent.story[Agent.state-1, Agent.arch.Z__flat[0]] == 1: #If the agent ate food 
         print("increasing counter due to reaction and food present")

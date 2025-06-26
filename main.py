@@ -9,8 +9,8 @@ st.set_page_config(layout="centered")
 st.title("Realtime Pavlov App")
 
 if not st.session_state:
-    st.session_state.agent = ao.Agent(Arch=Arch)
-    st.session_state.agent._gen = False
+    st.session_state.agent = ao.Agent(Arch=Arch, save=True)
+    st.session_state.agent._gen = True
     st.session_state.Run = False
     st.session_state.trial_number = 0
     st.session_state.results = []
